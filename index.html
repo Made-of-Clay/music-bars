@@ -1,19 +1,25 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite App</title>
-  </head>
-  <body>
-    <div id="app" class="bg-white dark:bg-slate-800">
-        <div class="flex justify-center flex-col items-center">
-            <h1>Music Bars</h1>
+    <head>
+        <meta charset="UTF-8" />
+        <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Vite App</title>
+    </head>
+    <body>
+        <div id="app" class="bg-white dark:bg-slate-800">
+            <div class="flex justify-center flex-col items-center max-w-screen-md m-auto">
+                <h1>Music Bars</h1>
 
-            <p>Scan a UPC barcode and listen to the beats. 🎵</p>
+                <p>Scan a UPC barcode and listen to the beats. 🎵</p>
+
+                <div id="reader"></div>
+
+                <output></output>
+
+                <button id="tone">Tone</button>
+            </div>
         </div>
-    </div>
-    <script type="module" src="/main.js"></script>
-  </body>
+        <script type="module" src="/main.js"></script>
+    </body>
 </html>

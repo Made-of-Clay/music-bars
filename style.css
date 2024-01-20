@@ -2,12 +2,27 @@
 @tailwind components;
 @tailwind utilities;
 
-html, body, #app {
-    @apply w-screen h-screen dark:text-slate-300
+html,
+body,
+#app {
+    @apply w-screen h-screen dark:text-slate-300;
 }
 #app {
-    @apply p-4
+    @apply p-4;
 }
 h1 {
-    @apply text-4xl font-bold dark:text-slate-100
+    @apply text-4xl font-bold dark:text-slate-100;
+}
+output {
+    @apply border border-dashed m-4 w-1/4 overflow-auto;
+}
+#reader {
+    width: 500px;
+}
+button,
+button[type='button'] {
+    @apply bg-gradient-to-t from-sky-800 to-sky-500;
+    @apply text-slate-900 dark:text-slate-200;
+    @apply p-2;
+    @apply border rounded-md;
 }
