@@ -13,10 +13,19 @@ function onScanSuccess(decodedText, decodedResult) {
     const item = `${decodedText} @ ${time}`;
     if (!scanLog.includes(item)) scanLog.push(item);
     updateOutput();
+    html5QrcodeScanner.clear();
 }
 
+function onScanError(message) {
+    console.error(message);
+}
+
+// Scanner Docs: https://blog.minhazav.dev/research/html5-qrcode
 var html5QrcodeScanner = new Html5QrcodeScanner('reader', {
     fps: 10,
     qrbox: 250,
 });
-html5QrcodeScanner.render(onScanSuccess);
+html5QrcodeScanner.render(onScanSuccess, onScanError);
+
+// How to generate tones w/ web API: https://marcgg.com/blog/2016/11/01/javascript-audio/
+// TODO write library
