@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+    color-scheme: dark light;
+    accent-color: mediumvioletred;
+}
 html,
 body,
 #app {
@@ -24,5 +28,10 @@ button[type='button'] {
     @apply bg-gradient-to-t from-sky-800 to-sky-500;
     @apply text-slate-900 dark:text-slate-200;
     @apply p-2;
-    @apply border rounded-md;
+    @apply rounded-sm;
+}
+select {
+    @apply p-2 w-full;
+    @apply rounded-sm;
+    /* width: fit-content; */
 }
