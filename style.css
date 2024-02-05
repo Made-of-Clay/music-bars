@@ -17,8 +17,11 @@ body,
 h1 {
     @apply text-4xl font-bold dark:text-slate-100;
 }
-output {
+/* output {
     @apply border border-dashed m-4 w-1/4 overflow-auto;
+} */
+#timePerNote::after {
+    content: ' sec';
 }
 #reader {
     width: 500px;

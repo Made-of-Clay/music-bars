@@ -9,11 +9,18 @@ export const modes = {
     Locrian: [0, 1, 2, 2, 1, 2, 2, 2],
 };
 
+// how do I convert selected root note into starting point?
+// take root and ask for next in mode (+1 or +2)
+// How do I iterate to next in Map?
+// map.next(), check is root; if not, go to next
+// when found, get next num in mode and go that many next()
+
 /**
  * Map of frequencies where key is the specific note and value is the frequency.
  * 'C0', 'C#, 'D0', 'Eb0', 'E0', 'F0', 'F#, 'G0', 'G#, 'A0', 'Bb0', 'B0', 'C1', 'C#, 'D1', 'Eb1', 'E1', 'F1', 'F#, 'G1', 'G#, 'A1', 'Bb1', 'B1', 'C2', 'C#, 'D2', 'Eb2', 'E2', 'F2', 'F#, 'G2', 'G#, 'A2', 'Bb2', 'B2', 'C3', 'C#, 'D3', 'Eb3', 'E3', 'F3', 'F#, 'G3', 'G#, 'A3', 'Bb3', 'B3', 'C4', 'C#, 'D4', 'Eb4', 'E4', 'F4', 'F#, 'G4', 'G#, 'A4', 'Bb4', 'B4', 'C5', 'C#, 'D5', 'Eb5', 'E5', 'F5', 'F#, 'G5', 'G#, 'A5', 'Bb5', 'B5', 'C6', 'C#, 'D6', 'Eb6', 'E6', 'F6', 'F#, 'G6', 'G#, 'A6', 'Bb6', 'B6', 'C7', 'C#, 'D7', 'Eb7', 'E7', 'F7', 'F#, 'G7', 'G#, 'A7', 'Bb7', 'B7', 'C8', 'C#, 'D8', 'Eb8', 'E8', 'F8', 'F#, 'G8', 'G#, 'A8', 'Bb8', 'B8'
+ * @type {[string, number]}
  */
-export const noteMap = new Map([
+export const noteMap = [
     ['C0', 16.35],
     ['C#0', 17.32],
     ['D0', 18.35],
@@ -122,4 +129,4 @@ export const noteMap = new Map([
     ['A8', 7040],
     ['Bb8', 7459],
     ['B8', 7902],
-]);
+];
