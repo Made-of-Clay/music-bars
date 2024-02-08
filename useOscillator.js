@@ -16,4 +16,5 @@ function setupOscillator() {
 export function useOscillator() {
     if (!audioContext) audioContext = new AudioContext();
     setupOscillator();
+    return oscillator;
 }

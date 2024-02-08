@@ -60,9 +60,7 @@ function updateNoteOptions() {
 
 function updateModeOptions() {
     const fragment = document.createDocumentFragment();
-    console.log('mode keys', Object.keys(modes));
     for (const mode of Object.keys(modes)) {
-        console.log({ mode });
         const option = document.createElement('option');
         option.textContent = mode;
         fragment.appendChild(option);
@@ -73,23 +71,10 @@ function updateModeOptions() {
 
 updateNoteOptions();
 updateModeOptions();
+rootNoteEl.value = 'C4';
 
 // How to generate tones w/ web API: https://marcgg.com/blog/2016/11/01/javascript-audio/
-document.querySelector('#tone').addEventListener('click', () => {
-    // makeTone();
-    console.log({
-        rootNote: rootNoteEl.value,
-        mode: modes[modesEl.value],
-        modeIndex: modesEl.value,
-        modes,
-    });
-    // console.log(
-    //     'getFrequenciesFromMode',
-    //     getFrequenciesFromMode(rootNoteEl.value, modes[modesEl.value])
-    // );
-    // const frequencies = getFrequenciesFromMode(rootNoteEl.value, modes[modesEl.value]);
-    play();
-});
+document.querySelector('#tone').addEventListener('click', play);
 
 /**
  * @param {string} rootNote
@@ -97,7 +82,6 @@ document.querySelector('#tone').addEventListener('click', () => {
  * @returns {number[]} Sequence of frequencies to play
  */
 function getFrequenciesFromMode(rootNote, mode) {
-    console.log({ mode });
     const rootNoteIndex = noteMap.findIndex(([root]) => rootNote === root);
     if (rootNoteIndex === -1) {
         console.error(`Invalid root note: ${rootNote}`);
@@ -106,26 +90,11 @@ function getFrequenciesFromMode(rootNote, mode) {
     // loop mode; each item is added to counter, then counter is how many from rootNoteIndex
     // I should grab frequency
     const notes = [];
-    let offset = 0;
+    let offset = rootNoteIndex;
     mode.forEach((semitone) => {
-        console.log(`${offset} + ${semitone} = ${offset + semitone}`);
         offset += Number(semitone);
-        console.log({ offset }, noteMap[offset]);
         notes.push(noteMap[offset][1]);
     });
-    // for (const semitone in mode) {
-    //     console.log(`${offset} + ${semitone} = ${offset + semitone}`)
-    //     offset += Number(semitone);
-    //     console.log({ offset }, noteMap[offset]);
-    //     notes.push(noteMap[offset][1]);
-    // }
-    // for (let i = 0, offset = 0; i < mode.length; i++) {
-    //     const currentSemitone = mode[i];
-    //     offset += currentSemitone;
-    //     /** @const {number} frequency */
-    //     const [, frequency] = noteMap[offset];
-    //     notes.push(frequency);
-    // }
     return notes;
 }
 
@@ -133,42 +102,34 @@ function getFrequenciesFromMode(rootNote, mode) {
  * Play the given arrow of notes (numbers) assuming 0 is the root note and subsequent numbers are in the selected mode
  * @param {number[]} noteList The list of notes to play in the selected mode & root
  */
-function play() {
-    const o = useOscillator();
-    // get duration - input[type="number"]
+async function play() {
+    const context = new AudioContext();
+    const o = context.createOscillator();
+    o.connect(context.destination);
     const duration = durationEl.value;
-    // ----
-    // call func that sets freq, waits, duration, then sets the next freq in array
     const frequencies = getFrequenciesFromMode(
         rootNoteEl.value,
         modes[modesEl.value]
     );
-    // playEachForDuration(frequencies, duration, );
-    // o.frequency.value = someFreq;
-    // wait duration
-    // o.frequency.value = someOtherFreq;
-    // wait duration
+
+    let isPlaying = false;
     async function playThenWait(freqIndex) {
-        if (freqIndex >= frequencies.length) {
+        if (freqIndex >= frequencies.length && isPlaying) {
             o.stop();
+            return;
         }
-        // ! # TODO figure out why this is erroring at o.frequency
         o.frequency.value = frequencies[freqIndex];
+        if (!isPlaying) {
+            o.start();
+            isPlaying = true;
+        }
         await waitSeconds(duration);
-        playThenWait(freqIndex + 1);
+        await playThenWait(freqIndex + 1);
     }
 
-    playThenWait(0);
-}
-
-const middleC = 261.6;
-
-function makeTone() {
-    const context = new AudioContext();
-    const o = context.createOscillator();
-    o.connect(context.destination);
-    o.frequency.value = 880;
-    o.start();
-    setTimeout(() => (o.frequency.value = 440), 1000);
-    setTimeout(() => o.stop(), 2000);
+    await playThenWait(0);
+    try {
+        console.log('stopping');
+        o.stop();
+    } catch (_) {}
 }
