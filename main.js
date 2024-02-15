@@ -1,40 +1,41 @@
 import './style.css';
-import { Html5QrcodeScanner } from 'html5-qrcode';
 import { modes, noteMap } from './constants';
 import { useDuration } from './src/useDuration';
 import { play } from './src/play';
+import { useScanner } from './src/useScanner';
 
-const scanLog = [];
-
-// const output = document.querySelector('output');
-// function updateOutput() {
-//     output.innerHTML = scanLog.join('<br>');
-// }
+// const scanLog = [];
 
 const { updateDurationOutput } = useDuration();
 updateDurationOutput();
 
-function onScanSuccess(decodedText, decodedResult) {
-    const time = new Date().toLocaleTimeString();
-    const item = `${decodedText} @ ${time}`;
-    if (!scanLog.includes(item)) scanLog.push(item);
-    updateOutput();
-    html5QrcodeScanner.clear();
-}
+// function onScanSuccess(decodedText, decodedResult) {
+//     const time = new Date().toLocaleTimeString();
+//     const item = `${decodedText} @ ${time}`;
+//     if (!scanLog.includes(item)) scanLog.push(item);
+//     updateOutput();
+//     html5QrcodeScanner.clear();
+// }
 
-let lastMessage = '';
-function onScanError(message) {
-    if (lastMessage === message) return;
-    lastMessage = message;
-    console.error(message);
-}
+// let lastMessage = '';
+// function onScanError(message) {
+//     if (lastMessage === message) return;
+//     lastMessage = message;
+//     console.error(message);
+// }
 
-// Scanner Docs: https://blog.minhazav.dev/research/html5-qrcode
-const html5QrcodeScanner = new Html5QrcodeScanner('reader', {
-    fps: 10,
-    qrbox: 250,
-});
+// // Scanner Docs: https://blog.minhazav.dev/research/html5-qrcode
+// const html5QrcodeScanner = new Html5QrcodeScanner('reader', {
+//     fps: 10,
+//     qrbox: 250,
+// });
 // html5QrcodeScanner.render(onScanSuccess, onScanError);
+/** @param {string} code */
+function handleSuccess(code) {
+    console.log(code);
+}
+const { render } = useScanner(handleSuccess);
+// render();
 
 const rootNoteEl = document.querySelector('#rootNote');
 const modesEl = document.querySelector('#modes');
