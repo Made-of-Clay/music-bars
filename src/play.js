@@ -28,11 +28,29 @@ function getFrequenciesFromMode(rootNote, mode) {
     return notes;
 }
 
+const noop = () => {};
+let innerStop = noop;
+export function stop() {
+    innerStop();
+}
+
+/**
+ * @callback OnEachToneCallback
+ * @param {number} toneFrequency
+ * @param {number} index
+ * @returns void
+ */
+/**
+ * @callback OnPlaybackStop
+ * @returns void
+ */
 /**
  * Play the given arrow of notes (numbers) assuming 0 is the root note and subsequent numbers are in the selected mode
  * @param {number[]} frequencyIndexOrder Order of requencies to play
+ * @param {OnEachToneCallback} handleTone
+ * @param {OnPlaybackStop} handleFinish
  */
-export async function play(frequencyIndexOrder) {
+export async function play(frequencyIndexOrder, handleTone, handleFinish) {
     const context = new AudioContext();
     const o = context.createOscillator();
     o.connect(context.destination);
@@ -44,6 +62,9 @@ export async function play(frequencyIndexOrder) {
         modes[modesEl.value]
     );
 
+    // ? I have to assign it this way; doesn't like when I treat innerStop as o.stop alias 🤷‍♂️
+    innerStop = () => o.stop();
+
     const fakeFreqOrder = frequencyIndexOrder.map((i) => frequencies[i]);
 
     let isPlaying = false;
@@ -53,11 +74,17 @@ export async function play(frequencyIndexOrder) {
             o.stop();
             return;
         }
+        console.log({
+            freqList: freqList,
+            frequency: freqList[freqIndex],
+            freqIndex: freqIndex,
+        });
         o.frequency.value = freqList[freqIndex];
         if (!isPlaying) {
             o.start();
             isPlaying = true;
         }
+        handleTone && handleTone(freqList[freqIndex], freqIndex);
         await waitSeconds(duration);
         await playThenWait(freqIndex + 1, freqList);
     }
@@ -65,6 +92,8 @@ export async function play(frequencyIndexOrder) {
     await playThenWait(0, fakeFreqOrder);
     try {
         console.log('stopping');
+        handleFinish && handleFinish();
         o.stop();
+        innerStop = noop;
     } catch (_) {}
 }

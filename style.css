@@ -39,3 +39,22 @@ select {
     @apply rounded-sm;
     /* width: fit-content; */
 }
+#display span[data-playing] {
+    transition: all 0.3s;
+}
+#display span[data-playing='true'] {
+    @apply bg-yellow-400 text-black;
+    @apply px-1;
+}
+
+.anim-pulse {
+    animation: pulse 0.5s alternate infinite;
+}
+@keyframes pulse {
+    from {
+        transform: scale(1);
+    }
+    to {
+        transform: scale(1.5);
+    }
+}
