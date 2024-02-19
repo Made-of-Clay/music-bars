@@ -1,14 +1,8 @@
 import { Html5QrcodeScanner } from 'html5-qrcode';
 
-const scanLog = [];
-
 /** @param {(code: string) => void} handleSuccess */
 export function useScanner(handleSuccess) {
     function onScanSuccess(decodedText, decodedResult) {
-        const time = new Date().toLocaleTimeString();
-        const item = `${decodedText} @ ${time}`;
-        console.log(item, decodedResult);
-        if (!scanLog.includes(item)) scanLog.push(item);
         handleSuccess(decodedText);
         html5QrcodeScanner.clear();
     }
