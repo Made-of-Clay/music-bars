@@ -15,22 +15,24 @@ function getFrequenciesFromMode(rootNote, mode) {
         console.error(`Invalid root note: ${rootNote}`);
         return;
     }
-    // loop mode; each item is added to counter, then counter is how many from rootNoteIndex
-    // I should grab frequency
     const notes = [];
+
     let offset = rootNoteIndex;
     mode.forEach((semitone) => {
         offset += Number(semitone);
         notes.push(noteMap[offset][1]);
     });
+    const n = mode[1]; // rule for 9th note == (rule for 2nd note + octave)
+    notes.push(noteMap[offset + n][1]); // get 9th note (ocatave + 1)
+
     return notes;
 }
 
 /**
  * Play the given arrow of notes (numbers) assuming 0 is the root note and subsequent numbers are in the selected mode
- * @param {number[]} noteList The list of notes to play in the selected mode & root
+ * @param {number[]} frequencyIndexOrder Order of requencies to play
  */
-export async function play() {
+export async function play(frequencyIndexOrder) {
     const context = new AudioContext();
     const o = context.createOscillator();
     o.connect(context.destination);
@@ -42,22 +44,25 @@ export async function play() {
         modes[modesEl.value]
     );
 
+    const fakeFreqOrder = frequencyIndexOrder.map((i) => frequencies[i]);
+
     let isPlaying = false;
-    async function playThenWait(freqIndex) {
-        if (freqIndex >= frequencies.length && isPlaying) {
+    // Just loops mode; eventually need a func to play tone array of mixed indexes
+    async function playThenWait(freqIndex, freqList) {
+        if (freqIndex >= freqList.length && isPlaying) {
             o.stop();
             return;
         }
-        o.frequency.value = frequencies[freqIndex];
+        o.frequency.value = freqList[freqIndex];
         if (!isPlaying) {
             o.start();
             isPlaying = true;
         }
         await waitSeconds(duration);
-        await playThenWait(freqIndex + 1);
+        await playThenWait(freqIndex + 1, freqList);
     }
 
-    await playThenWait(0);
+    await playThenWait(0, fakeFreqOrder);
     try {
         console.log('stopping');
         o.stop();

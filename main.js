@@ -4,44 +4,28 @@ import { useDuration } from './src/useDuration';
 import { play } from './src/play';
 import { useScanner } from './src/useScanner';
 
-// const scanLog = [];
-
 const { updateDurationOutput } = useDuration();
 updateDurationOutput();
 
-// function onScanSuccess(decodedText, decodedResult) {
-//     const time = new Date().toLocaleTimeString();
-//     const item = `${decodedText} @ ${time}`;
-//     if (!scanLog.includes(item)) scanLog.push(item);
-//     updateOutput();
-//     html5QrcodeScanner.clear();
-// }
+let barcode = '0';
+function getBarcodeAsArray() {
+    return barcode.split('').map(Number);
+}
 
-// let lastMessage = '';
-// function onScanError(message) {
-//     if (lastMessage === message) return;
-//     lastMessage = message;
-//     console.error(message);
-// }
-
-// // Scanner Docs: https://blog.minhazav.dev/research/html5-qrcode
-// const html5QrcodeScanner = new Html5QrcodeScanner('reader', {
-//     fps: 10,
-//     qrbox: 250,
-// });
-// html5QrcodeScanner.render(onScanSuccess, onScanError);
 /** @param {string} code */
 function handleSuccess(code) {
+    barcode = code;
+    document.getElementById('display').innerText = code;
+    document.getElementById('tone')?.removeAttribute('disabled');
     console.log(code);
 }
 const { render } = useScanner(handleSuccess);
-// render();
+render();
 
 const rootNoteEl = document.querySelector('#rootNote');
 const modesEl = document.querySelector('#modes');
 
 function updateNoteOptions() {
-    // use for..of on noteMap to create options for each note, append them to a document fragment, then append the finished result to the #rootNote select element
     const fragment = document.createDocumentFragment();
     for (const [note] of noteMap) {
         const option = document.createElement('option');
@@ -68,4 +52,6 @@ updateModeOptions();
 rootNoteEl.value = 'C4';
 
 // How to generate tones w/ web API: https://marcgg.com/blog/2016/11/01/javascript-audio/
-document.querySelector('#tone').addEventListener('click', play);
+document
+    .querySelector('#tone')
+    .addEventListener('click', () => play(getBarcodeAsArray()));

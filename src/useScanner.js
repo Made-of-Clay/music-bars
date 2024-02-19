@@ -7,8 +7,9 @@ export function useScanner(handleSuccess) {
     function onScanSuccess(decodedText, decodedResult) {
         const time = new Date().toLocaleTimeString();
         const item = `${decodedText} @ ${time}`;
+        console.log(item, decodedResult);
         if (!scanLog.includes(item)) scanLog.push(item);
-        updateOutput();
+        handleSuccess(decodedText);
         html5QrcodeScanner.clear();
     }
 
