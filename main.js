@@ -22,7 +22,7 @@ function handleSuccess(code) {
     }
     setBarcode(code);
     updateBarcodeDisplay();
-    document.getElementById('tone')?.removeAttribute('disabled');
+    document.getElementById('play')?.removeAttribute('disabled');
 }
 const { render } = useScanner(handleSuccess);
 render();
@@ -86,7 +86,7 @@ function handleFinish() {
 
 // How to generate tones w/ web API: https://marcgg.com/blog/2016/11/01/javascript-audio/
 document
-    .querySelector('#tone')
+    .querySelector('#play')
     .addEventListener('click', () =>
         play(getBarcodeAsArray(), handleEachTone, handleFinish)
     );
