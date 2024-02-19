@@ -3,40 +3,16 @@ import { modes, noteMap } from './constants';
 import { useDuration } from './src/useDuration';
 import { play, stop } from './src/play';
 import { useScanner } from './src/useScanner';
+import {
+    getDisplay,
+    setBarcode,
+    getBarcodeAsArray,
+    clearBarcode,
+    updateBarcodeDisplay,
+} from './src/displayCode';
 
 const { updateDurationOutput } = useDuration();
 updateDurationOutput();
-
-const getDisplay = () => document.getElementById('display');
-
-let barcode = '0';
-function getBarcodeAsArray() {
-    return barcode.split('').map(Number);
-}
-function clearBarcode() {
-    barcode = '0';
-    getDisplay().innerHTML = '';
-}
-
-/** @param {number} barcode */
-function updateBarcodeDisplay(barcode) {
-    const docFrag = document.createDocumentFragment();
-    getBarcodeAsArray().forEach((n) => {
-        const span = document.createElement('span');
-        span.textContent = n;
-        span.setAttribute('data-playing', 'false');
-        docFrag.appendChild(span);
-    });
-    const display = getDisplay();
-    if (!display) {
-        alert('output#display disappeared');
-        return;
-    }
-    display.appendChild(docFrag);
-    const animationPulseClass = 'anim-pulse';
-    display.classList.add(animationPulseClass);
-    setTimeout(() => display.classList.remove(animationPulseClass), 1000);
-}
 
 /** @param {string} code */
 function handleSuccess(code) {
@@ -44,7 +20,7 @@ function handleSuccess(code) {
         console.error(`Invalid code: ${code}`);
         return;
     }
-    barcode = code;
+    setBarcode(code);
     updateBarcodeDisplay();
     document.getElementById('tone')?.removeAttribute('disabled');
 }

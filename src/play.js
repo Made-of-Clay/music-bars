@@ -22,8 +22,14 @@ function getFrequenciesFromMode(rootNote, mode) {
         offset += Number(semitone);
         notes.push(noteMap[offset][1]);
     });
-    const n = mode[1]; // rule for 9th note == (rule for 2nd note + octave)
-    notes.push(noteMap[offset + n][1]); // get 9th note (ocatave + 1)
+
+    // * Okay to be this rigid, b/c 0-9 is complete range of barcode ints
+    const ninthOffset = mode[1];
+    const tenthOffset = mode[1] + mode[2];
+    const ninthNote = noteMap[offset + ninthOffset];
+    const tenthNote = noteMap[offset + tenthOffset];
+    notes.push(ninthNote[1]);
+    notes.push(tenthNote[1]);
 
     return notes;
 }
@@ -61,11 +67,12 @@ export async function play(frequencyIndexOrder, handleTone, handleFinish) {
         rootNoteEl.value,
         modes[modesEl.value]
     );
+    console.log({ frequencies });
 
     // ? I have to assign it this way; doesn't like when I treat innerStop as o.stop alias 🤷‍♂️
     innerStop = () => o.stop();
 
-    const fakeFreqOrder = frequencyIndexOrder.map((i) => frequencies[i]);
+    const freqOrder = frequencyIndexOrder.map((i) => frequencies[i]);
 
     let isPlaying = false;
     // Just loops mode; eventually need a func to play tone array of mixed indexes
@@ -74,11 +81,6 @@ export async function play(frequencyIndexOrder, handleTone, handleFinish) {
             o.stop();
             return;
         }
-        console.log({
-            freqList: freqList,
-            frequency: freqList[freqIndex],
-            freqIndex: freqIndex,
-        });
         o.frequency.value = freqList[freqIndex];
         if (!isPlaying) {
             o.start();
@@ -89,7 +91,7 @@ export async function play(frequencyIndexOrder, handleTone, handleFinish) {
         await playThenWait(freqIndex + 1, freqList);
     }
 
-    await playThenWait(0, fakeFreqOrder);
+    await playThenWait(0, freqOrder);
     try {
         console.log('stopping');
         handleFinish && handleFinish();
