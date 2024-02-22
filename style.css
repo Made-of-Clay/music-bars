@@ -21,7 +21,8 @@ h1 {
     content: ' sec';
 }
 #reader {
-    width: 500px;
+    border: none !important;
+    max-width: 500px;
 }
 button,
 button[type='button'] {
@@ -57,4 +58,7 @@ select {
     to {
         transform: scale(1.5);
     }
+}
+.is-hidden {
+    display: none;
 }

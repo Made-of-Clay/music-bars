@@ -36,7 +36,9 @@ function getFrequenciesFromMode(rootNote, mode) {
 
 const noop = () => {};
 let innerStop = noop;
+let isPlaying = false;
 export function stop() {
+    isPlaying = false;
     innerStop();
 }
 
@@ -74,13 +76,22 @@ export async function play(frequencyIndexOrder, handleTone, handleFinish) {
 
     const freqOrder = frequencyIndexOrder.map((i) => frequencies[i]);
 
-    let isPlaying = false;
     // Just loops mode; eventually need a func to play tone array of mixed indexes
     async function playThenWait(freqIndex, freqList) {
         if (freqIndex >= freqList.length && isPlaying) {
             o.stop();
             return;
+        } else if (
+            freqIndex < freqList.length &&
+            freqIndex !== 0 &&
+            !isPlaying
+        ) {
+            return;
         }
+        // if (!isPlaying) {
+        //     o.stop();
+        //     return;
+        // }
         o.frequency.value = freqList[freqIndex];
         if (!isPlaying) {
             o.start();

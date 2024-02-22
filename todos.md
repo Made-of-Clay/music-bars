@@ -7,4 +7,5 @@ Next, accomplish the following todos:
 - [x] add rescan and stop buttons
 - [x] figure out why frequency 9 is not good
 - [ ] handle light theme styles
-- [ ] change layout
+  - really only the buttons, I think?
+- [x] change layout

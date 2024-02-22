@@ -10,9 +10,31 @@ import {
     clearBarcode,
     updateBarcodeDisplay,
 } from './src/displayCode';
+import { useButtonManager } from './src/useButtonManager';
 
 const { updateDurationOutput } = useDuration();
 updateDurationOutput();
+
+const {
+    hideAll,
+    showPlay,
+    showRescan,
+    showStop,
+    hidePlay,
+    hideRescan,
+    hideStop,
+} = useButtonManager();
+function handleDisplayChange(isScanning) {
+    console.log({ isScanning });
+    // all buttons hide when scanning, else,
+    if (isScanning) {
+        hideAll();
+    } else {
+        showPlay();
+        showRescan();
+    }
+    // what does it mean that we're not scanning anymore?
+}
 
 /** @param {string} code */
 function handleSuccess(code) {
@@ -24,7 +46,7 @@ function handleSuccess(code) {
     updateBarcodeDisplay();
     document.getElementById('play')?.removeAttribute('disabled');
 }
-const { render } = useScanner(handleSuccess);
+const { render } = useScanner(handleSuccess, handleDisplayChange);
 render();
 
 document.getElementById('rescan').addEventListener('click', () => {
@@ -33,6 +55,9 @@ document.getElementById('rescan').addEventListener('click', () => {
 });
 document.getElementById('stop').addEventListener('click', () => {
     stop();
+    showPlay();
+    showRescan();
+    hideStop();
     handleFinish();
 });
 
@@ -82,11 +107,15 @@ function handleFinish() {
     getDisplay()
         ?.querySelector('span[data-playing="true"]')
         .setAttribute('data-playing', false);
+    hideStop();
+    showPlay();
+    showRescan();
 }
 
 // How to generate tones w/ web API: https://marcgg.com/blog/2016/11/01/javascript-audio/
-document
-    .querySelector('#play')
-    .addEventListener('click', () =>
-        play(getBarcodeAsArray(), handleEachTone, handleFinish)
-    );
+document.querySelector('#play').addEventListener('click', () => {
+    play(getBarcodeAsArray(), handleEachTone, handleFinish);
+    hidePlay();
+    hideRescan();
+    showStop();
+});
