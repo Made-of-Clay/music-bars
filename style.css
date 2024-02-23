@@ -4,7 +4,7 @@
 
 :root {
     color-scheme: dark light;
-    accent-color: mediumvioletred;
+    /* accent-color: mediumvioletred; */
 }
 html,
 body,
@@ -26,8 +26,13 @@ h1 {
 }
 button,
 button[type='button'] {
-    @apply bg-gradient-to-t from-sky-800 to-sky-500;
-    @apply text-slate-900 dark:text-slate-200;
+    @apply transition-all;
+    /* @apply bg-gradient-to-t from-sky-500 to-sky-200; */
+    /* @apply dark:bg-gradient-to-t from-sky-800 to-sky-500; */
+    @apply bg-blue-600 hover:bg-blue-800;
+    @apply dark:bg-indigo-700 dark:hover:bg-indigo-900;
+    /* background-color: red; */
+    @apply text-slate-200 dark:text-slate-100;
     @apply p-2;
     @apply rounded-sm;
 }
@@ -36,6 +41,7 @@ button[disabled] {
     @apply bg-slate-500;
 }
 select {
+    @apply bg-slate-100 dark:bg-slate-700 dark:text-slate-50;
     @apply p-2 w-full;
     @apply rounded-sm;
     /* width: fit-content; */
